@@ -2,8 +2,8 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [2, 'always', ['fix', 'doc',]],
-    'scope-empty': [2, 'never']
-  }
+    "header-case": [2, 'never', 'upper-case']
+  },
 }
 
 /*
@@ -16,7 +16,7 @@ module.exports = {
     是否使用默认的rules
  */
 // defaultIgnores: true,
-
+// 'scope-empty': [2, 'never']
 
 // ⧗   input: foo: change
 // ✖   type must be one of [fix, doc] [type-enum]
