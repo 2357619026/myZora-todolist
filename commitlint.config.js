@@ -2,7 +2,8 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [2, 'always', ['FIX', 'doc',]],
-    "type-case": [2, 'always', 'upper-case']
+    "type-case": [2, 'always', 'upper-case'],
+    'header-full-stop': [2, 'always', ['~']]
   },
 }
 
