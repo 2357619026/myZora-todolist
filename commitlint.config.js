@@ -1,10 +1,8 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
+  parserPreset: './parse',
   rules: {
     'type-enum': [2, 'always', ['fix', 'doc',]],
-    "type-case": [2, 'never', 'upper-case'],
-    'subject-full-stop': [2, 'never', ['.']],
-    'header-full-stop': [2, 'never', ['.']]
   },
 }
 
