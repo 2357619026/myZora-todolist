@@ -1,12 +1,13 @@
 import React, { FC, ReactElement, useRef } from "react";
-import { ITodo } from "../typings";
+import { ACTION_TYPE } from "../redux/actionTypes";
+import { IAction, ITodo } from "../redux/type";
 
 interface IProps {
-	addTodo: (todo: ITodo) => void;
+	dispatch: (key: IAction) => any;
 	todoList: ITodo[];
 }
 
-const TdInput: FC<IProps> = ({ addTodo, todoList }): ReactElement => {
+const TdInput: FC<IProps> = ({ dispatch, todoList }): ReactElement => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const addItem = (): void => {
@@ -20,10 +21,13 @@ const TdInput: FC<IProps> = ({ addTodo, todoList }): ReactElement => {
 				return;
 			}
 
-			addTodo({
-				id: new Date().getTime(),
-				content: val,
-				completed: false,
+			dispatch({
+				type: ACTION_TYPE.ADD_TODO,
+				payload: {
+					id: new Date().getTime(),
+					content: val,
+					isFinish: false,
+				},
 			});
 
 			inputRef.current!.value = "";

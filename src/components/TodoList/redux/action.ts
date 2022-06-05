@@ -1,42 +1,75 @@
 // 一个又一个的动作
 // 接收state，和payload。通过payload对state进行操作
+import axios from "axios";
+import { addList, deleteList, updateList } from "../../../service/TodoListService";
+import { IState, ITodo } from "./type";
 
-import { IState, ITodo } from "../typings";
+export const getAction = (state: IState) => {
+	const addTodo = (payload: ITodo) => {
+		console.log("addTodo action");
 
-export const addTodo = (state: IState, payload: ITodo) => {
-	return {
-		...state,
-		todoList: [...state.todoList, payload],
+		addList(payload);
+		return {
+			...state,
+			todoList: [...state.todoList, payload],
+		};
 	};
-};
 
-export const removeTodo = (state: IState, payload: number) => {
-	const todoList = state.todoList.filter((item) => {
-		return item.id !== payload;
-	});
+	const removeTodo = (payload: number) => {
+		//delete from server
+		deleteList([payload]);
 
-	return {
-		...state,
-		todoList,
+		const todoList = state.todoList.filter((item) => {
+			return item.id !== payload;
+		});
+
+		return {
+			...state,
+			todoList,
+		};
 	};
-};
 
-export const toggleTodo = (state: IState, payload: number) => {
-	const todoList = state.todoList.map((item) => {
-		if (item.id === payload) {
-			item.completed = !item.completed;
-		}
-		return item;
-	});
-	return {
-		...state,
-		todoList,
+	const toggleTodo = (payload: number) => {
+		const todoList = state.todoList.map((item) => {
+			let isFinished = item.isFinish;
+			if (item.id === payload) {
+				isFinished = !isFinished;
+				console.log("request toggle");
+				// debugger;
+				// updateList({
+				// 	...item,
+				// 	isFinish: isFinished,
+				// });
+				axios.post("update/list", {
+					...item,
+					isFinish: isFinished,
+				});
+			}
+
+			return {
+				...item,
+				isFinish: isFinished,
+			};
+		});
+
+		return {
+			...state,
+			todoList,
+		};
 	};
-};
 
-export const initalTodo = (state: IState, payload: ITodo[]) => {
+	const initalTodo = (payload: ITodo[]) => {
+		console.log("initalTodo: ", payload);
+
+		return {
+			...state,
+			todoList: payload,
+		};
+	};
 	return {
-		...state,
-		todoList: payload,
+		addTodo,
+		removeTodo,
+		toggleTodo,
+		initalTodo,
 	};
 };

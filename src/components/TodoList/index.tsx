@@ -1,8 +1,10 @@
-import React, { FC, ReactElement, useCallback, useEffect, useReducer } from "react";
-import { ACTION_TYPE, IState, ITodo } from "./typings";
+import React, { createContext, FC, ReactElement, useEffect } from "react";
+import { getList } from "../../service/TodoListService";
 import TdInput from "./Input";
 import TdList from "./List";
-import { todoReducer } from "./redux/reducer";
+import { ACTION_TYPE } from "./redux/actionTypes";
+import useTodoReducer from "./redux/reducer";
+import { IAction, IState, ITodo } from "./redux/type";
 
 function init(initTodoList: ITodo[]): IState {
 	return {
@@ -10,47 +12,45 @@ function init(initTodoList: ITodo[]): IState {
 	};
 }
 
+type TContext = {
+	dispatch: (key: IAction) => any;
+};
+
+export const context = createContext({} as TContext);
+
 const TodoList: FC = (): ReactElement => {
-	const [state, dispatch] = useReducer(todoReducer, [], init);
+	const {
+		state: { todoList },
+		dispatch,
+	} = useTodoReducer({ todoList: [] } as IState);
 
 	useEffect(() => {
-		const todoList = JSON.parse(localStorage.getItem("todolist") || "[]");
+		(async function () {
+			const res = await getList<ITodo[]>();
+			// const res = await fetch("/zora/select/list", {
+			// 	method: "POST",
+			// 	mode: "cors",
+			// 	headers: {
+			// 		"Content-Type": "application/json",
+			// 		// 'Content-Type': 'application/x-www-form-urlencoded',
+			// 	},
+			// 	body: JSON.stringify({ userId: 1 }),
+			// });
+			// console.log("fetch: ", res);
 
-		dispatch({
-			type: ACTION_TYPE.INIT_TODO_TODOLIST,
-			payload: todoList,
-		});
-	}, []);
-
-	useEffect(() => {
-		localStorage.setItem("todolist", JSON.stringify(state.todoList));
-	}, [state.todoList]);
-
-	const addTodo = useCallback((todo: ITodo): void => {
-		dispatch({
-			type: ACTION_TYPE.ADD_TODO,
-			payload: todo,
-		});
-	}, []);
-
-	const removeTodo = useCallback((id: number): void => {
-		dispatch({
-			type: ACTION_TYPE.REMOVE_TODO,
-			payload: id,
-		});
-	}, []);
-
-	const toggleTodo = useCallback((id: number): void => {
-		dispatch({
-			type: ACTION_TYPE.TOGGLE_TODO,
-			payload: id,
-		});
+			dispatch({
+				type: ACTION_TYPE.INIT_TODO_TODOLIST,
+				payload: res,
+			});
+		})();
 	}, []);
 
 	return (
 		<div className="todo-list">
-			<TdInput addTodo={addTodo} todoList={state.todoList} />
-			<TdList todoList={state.todoList} removeTodo={removeTodo} toggleTodo={toggleTodo} />
+			<TdInput dispatch={dispatch} todoList={todoList} />
+			<context.Provider value={{ dispatch }}>
+				<TdList todoList={todoList} />
+			</context.Provider>
 		</div>
 	);
 };

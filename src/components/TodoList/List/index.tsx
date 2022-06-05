@@ -1,19 +1,17 @@
-import React, { FC, ReactElement, useMemo } from "react";
-import { ITodo } from "../typings";
+import React, { FC, ReactElement } from "react";
+import { ITodo } from "../redux/type";
 import TdItem from "./item";
 
 interface IProps {
 	todoList: ITodo[];
-	removeTodo: (id: number) => void;
-	toggleTodo: (id: number) => void;
 }
 
-const TdList: FC<IProps> = ({ todoList, removeTodo, toggleTodo }): ReactElement => {
+const TdList: FC<IProps> = ({ todoList }): ReactElement => {
 	return (
 		<div className="td-list">
 			{todoList &&
 				todoList.map((todo: ITodo) => {
-					return <TdItem key={todo.id} todo={todo} removeTodo={removeTodo} toggleTodo={toggleTodo} />;
+					return <TdItem key={todo.id} todo={todo} />;
 				})}
 		</div>
 	);
