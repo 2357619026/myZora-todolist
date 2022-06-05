@@ -27,17 +27,6 @@ const TodoList: FC = (): ReactElement => {
 	useEffect(() => {
 		(async function () {
 			const res = await getList<ITodo[]>();
-			// const res = await fetch("/zora/select/list", {
-			// 	method: "POST",
-			// 	mode: "cors",
-			// 	headers: {
-			// 		"Content-Type": "application/json",
-			// 		// 'Content-Type': 'application/x-www-form-urlencoded',
-			// 	},
-			// 	body: JSON.stringify({ userId: 1 }),
-			// });
-			// console.log("fetch: ", res);
-
 			dispatch({
 				type: ACTION_TYPE.INIT_TODO_TODOLIST,
 				payload: res,

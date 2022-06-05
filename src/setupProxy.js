@@ -1,14 +1,11 @@
-const proxy = require('http-proxy-middleware');
-const createProxyMiddleware = proxy;
+const { createProxyMiddleware } = require('http-proxy-middleware');
 module.exports = function (app) {
   app.use(
+    'https://zora.cool:3002',
     createProxyMiddleware(
-      '/zora', {
-      target: 'http://localhost:3002',//请求的真实地址
-      changeOrigin: true,
-      pathRewrite: {
-        '/zora': ''
-      }
-    })
+      {
+        target: 'http://zora.cool:3002',//请求的真实地址
+        changeOrigin: true
+      })
   );
 };

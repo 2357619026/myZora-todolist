@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-axios.defaults.baseURL = "/zora";
+axios.defaults.baseURL = "https://zora.cool:3002";
 
 axios.interceptors.request.use((config: AxiosRequestConfig) => {
 	console.log("aspect: request");
